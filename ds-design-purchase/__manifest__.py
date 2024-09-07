@@ -22,7 +22,7 @@
             'ds-design-purchase/static/src/scss/custom_styles.scss',
         ],
         'web.assets_common': [
-            'ds-design-purchase/static/src/js/product_line_custom.js',
+            #'ds-design-purchase/static/src/js/product_line_custom.js',
         ],
     },
     'demo': [

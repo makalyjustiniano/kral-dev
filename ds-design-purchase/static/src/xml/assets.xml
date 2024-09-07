@@ -7,7 +7,7 @@
     >
         <xpath expr="." position="inside">
               <link rel="stylesheet" href="/ds-design-purchase/static/src/scss/custom_styles.scss"/>
-             <script type="text/javascript" src="/ds-design-purchase/static/src/js/product_line_custom.js"></script>
+            <!-- <script type="text/javascript" src="/ds-design-purchase/static/src/js/product_line_custom.js"></script> -->
         </xpath>
     </template>
 
