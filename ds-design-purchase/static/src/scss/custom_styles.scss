@@ -1,8 +1,7 @@
-/* Archivo: custom_styles.scss */
 .o_form_sheet {
-    max-width: 95% !important;  /* Usar !important si es necesario para sobreescribir otros estilos */
+    max-width: 95% !important;
 }
 
 th[data-name="product_id"] {
-    width: 400px !important;  /* Ajusta el ancho de la columna */
+    width: 400px !important;
 }
