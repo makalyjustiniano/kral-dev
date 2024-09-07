@@ -2,6 +2,7 @@ from odoo import fields, models
 
 class Resusers(models.Model):
     _inherit = 'res.users'
+    
 
     #category_user = fields.Boolean(string="Preventista", default=False)
     category_preventista = fields.Boolean(string='Preventista', default=False)

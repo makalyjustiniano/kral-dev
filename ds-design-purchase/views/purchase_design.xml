@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id="view_move_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit.purchase_divisa</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='product_id']" position="replace">
+                    <field name="product_id"  style="white-space: normal; word-wrap: break-word;"   attrs="{                                             'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))],                                             'required': [('display_type', '=', False)],                                         }" context="{'partner_id':parent.partner_id, 'quantity':product_qty, 'company_id': parent.company_id}" force_save="1" domain="[('purchase_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
