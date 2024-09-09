@@ -14,6 +14,7 @@
     'depends': ['account', 'contacts', 'sale', 'product', 'stock',],
     'data': [
         'views/res_users_views.xml',
+        'data/groups.xml',
     ],
     'demo': [
 

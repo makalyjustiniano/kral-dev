@@ -7,17 +7,25 @@
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
-                  <xpath expr="//sheet/notebook/page[@name='access_rights']/field" position="before">
-                      <group groups="base.group_no_one">
-                        <separator string="Categorías" colspan="2" groups="base.group_no_one"/>
-                        <!--  <field name="category_user"  /> -->
-                           <field name="category_preventista"  />
-                         <field name="category_auto_venta"  />
-                          <field name="category_jefe_venta"  />
-                          <field name="category_jefe_contable"  />
-                          <field name="category_cobrador"  />
-                          <field name="category_distribuidor"  />
-                        <newline/>
+                  <xpath expr="//sheet/notebook/page[@name='access_rights']/group" position="before">
+                      <group groups="base.group_no_one" col="2">
+                          <group  col="2">
+                            <separator string="Categorías" colspan="2" groups="base.group_no_one"/>
+
+                               <field name="category_preventista"  />
+                             <field name="category_auto_venta"  />
+                              <field name="category_jefe_venta"  />
+
+                            <newline/>
+                          </group>
+                          <group col="2">
+                            <separator  colspan="2" groups="base.group_no_one"/>
+
+                              <field name="category_jefe_contable"  />
+                              <field name="category_cobrador"  />
+                              <field name="category_distribuidor"  />
+                            <newline/>
+                          </group>
                       </group>
                 </xpath>
             </field>

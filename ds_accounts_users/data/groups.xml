@@ -1,0 +1,27 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Definir una nueva categoría si es necesario -->
+        <record id="module_category_sales_management_custom" model="ir.module.category">
+            <field name="name">Kral Grupo Ventas</field>
+            <field name="description">Category Preventista</field>
+        </record>
+
+
+
+        <!-- Nuevo grupo que hereda permisos de "Ventas / Usuario: solo mostrar documentos propios" -->
+        <record id="group_custom_sales_restricted" model="res.groups">
+            <field name="name">Preventista</field>
+            <field name="category_id" ref="module_category_sales_management_custom"/>
+            <field name="comment">Ventas: Acceso a Cotización</field>
+        </record>
+
+        <record id="group_custom_sales_restricted_auto_venta" model="res.groups">
+            <field name="name">Auto Venta</field>
+            <field name="category_id" ref="module_category_sales_management_custom"/>
+            <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman')), (4, ref('stock.group_stock_user'))]"/>
+            <field name="comment">Ventas: Acceso a Cotización , PV, SFE</field>
+        </record>
+
+
+    </data>
+</odoo>
