@@ -1,7 +1,11 @@
-/*.o_form_sheet {
+.o_form_sheet, .o_form_view {
     max-width: 95% !important;
 }
-*/
+
 th[data-name="product_id"] {
     width: 300px !important;
 }
+
+.o_FormRenderer_chatterContainer.o-aside {
+    width: 100% !important;
+    }
