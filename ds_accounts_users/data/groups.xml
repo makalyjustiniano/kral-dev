@@ -12,6 +12,7 @@
         <record id="group_custom_sales_restricted" model="res.groups">
             <field name="name">Preventista</field>
             <field name="category_id" ref="module_category_sales_management_custom"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">Ventas: Acceso a Cotización</field>
         </record>
 
@@ -23,5 +24,42 @@
         </record>
 
 
+
+        <!-- Ocultar el menú de Cotizaciones -->
+        <record id="sale_quotation_menu" model="ir.ui.menu">
+            <field name="name">Cotizacion</field>
+            <field name="parent_id" ref="sale.sale_order_menu"/> <!-- Verifica que este xmlid sea correcto -->
+            <field name="action"  ref="sale.action_quotations" />
+            <field name="groups_id"  eval="[(4,ref('ds_accounts_users.group_custom_sales_restricted'))]" />
+        </record>
+
+        <record id="sale_producto_menu" model="ir.ui.menu">
+            <field name="name">Producto</field>
+            <field name="parent_id" ref="sale.sale_order_menu"/>
+            <field name="groups_id"  eval="[(4,ref('ds_accounts_users.group_custom_sales_restricted'))]" />
+        </record>
+
+
+            <!-- Permisos de Acceso para Preventista -->
+    <record id="sale_order_preventista_access" model="ir.model.access">
+        <field name="name">sale.order.preventista.access</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="group_id" ref="ds_accounts_users.group_custom_sales_restricted"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record>
+
+
+
+
+
+
+
+
+
+
     </data>
 </odoo>
+
