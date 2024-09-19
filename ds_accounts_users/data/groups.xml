@@ -1,65 +1,113 @@
 <odoo>
     <data noupdate="1">
         <!-- Definir una nueva categoría si es necesario -->
-        <record id="module_category_sales_management_custom" model="ir.module.category">
-            <field name="name">Kral Grupo Ventas</field>
+        <record id="module_category_sales_management_preventista" model="ir.module.category">
+            <field name="name">Kral Grupo Preventista</field>
             <field name="description">Category Preventista</field>
+      </record>
+
+        <record id="module_category_sales_management_autoventa" model="ir.module.category">
+            <field name="name">Kral Grupo Preventista</field>
+            <field name="description">Category Auto Ventas</field>
         </record>
-
-
 
         <!-- Nuevo grupo que hereda permisos de "Ventas / Usuario: solo mostrar documentos propios" -->
         <record id="group_custom_sales_restricted" model="res.groups">
             <field name="name">Preventista</field>
-            <field name="category_id" ref="module_category_sales_management_custom"/>
+            <field name="category_id" ref="module_category_sales_management_preventista"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">Ventas: Acceso a Cotización</field>
         </record>
 
         <record id="group_custom_sales_restricted_auto_venta" model="res.groups">
             <field name="name">Auto Venta</field>
-            <field name="category_id" ref="module_category_sales_management_custom"/>
+            <field name="category_id" ref="module_category_sales_management_autoventa"/>
             <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman')), (4, ref('stock.group_stock_user'))]"/>
             <field name="comment">Ventas: Acceso a Cotización , PV, SFE</field>
         </record>
 
-
-
         <!-- Ocultar el menú de Cotizaciones -->
-        <record id="sale_quotation_menu" model="ir.ui.menu">
-            <field name="name">Cotizacion</field>
+        <record id="sale.menu_sale_quotations" model="ir.ui.menu">
+            <field name="name">Cotizaciones</field>
             <field name="parent_id" ref="sale.sale_order_menu"/> <!-- Verifica que este xmlid sea correcto -->
             <field name="action"  ref="sale.action_quotations" />
             <field name="groups_id"  eval="[(4,ref('ds_accounts_users.group_custom_sales_restricted'))]" />
         </record>
 
-        <record id="sale_producto_menu" model="ir.ui.menu">
-            <field name="name">Producto</field>
+        <record id="product_menu_catalog" model="ir.ui.menu">
+            <field name="name">Productos</field>
             <field name="parent_id" ref="sale.sale_order_menu"/>
+            <field name="action" ref="sale.product_template_action" />
             <field name="groups_id"  eval="[(4,ref('ds_accounts_users.group_custom_sales_restricted'))]" />
+      </record>
+    <!-- <record id="sale_producto_menu_main2" model="ir.ui.menu">
+            <field name="name">Productos</field>
+            <field name="parent_id" ref="sale.menu_product"/>
+            <field name="groups_id"  eval="[(4,ref('ds_accounts_users.group_custom_sales_restricted'))]" />
+      </record>
+    
+       <record id="sale_producto_menu_main" model="ir.ui.menu">
+            <field name="name">Productos</field>
+            <field name="parent_id" ref="sale.product_menu_catalog" />
+            <field name="groups_id" eval="[(4,ref('ds_accounts_users.group_custom_sales_restricted'))]" />
+      
+      </record> --> 
+        <!-- Permisos de Acceso para Preventista -->
+        <record id="sale_order_preventista_access" model="ir.model.access">
+            <field name="name">sale.order.preventista.access</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="group_id" ref="ds_accounts_users.group_custom_sales_restricted"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
         </record>
 
+        <!-- Permisos de Acceso para Producto -->
+        <record id="product_product_preventista_access" model="ir.model.access">
+            <field name="name">product.product.preventista.access</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="group_id" ref="ds_accounts_users.group_custom_sales_restricted"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
 
-            <!-- Permisos de Acceso para Preventista -->
-    <record id="sale_order_preventista_access" model="ir.model.access">
-        <field name="name">sale.order.preventista.access</field>
-        <field name="model_id" ref="sale.model_sale_order"/>
-        <field name="group_id" ref="ds_accounts_users.group_custom_sales_restricted"/>
-        <field name="perm_read" eval="1"/>
-        <field name="perm_write" eval="1"/>
-        <field name="perm_create" eval="1"/>
-        <field name="perm_unlink" eval="1"/>
-    </record>
+        <!-- Permisos de Acceso para Transferencias -->
+        <record id="stock_picking_preventista_access" model="ir.model.access">
+            <field name="name">stock.picking.preventista.access</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="group_id" ref="ds_accounts_users.group_custom_sales_restricted"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
 
+        <!-- Permisos de Acceso para Línea de Pedido de Venta -->
+        <record id="sale_order_line_preventista_access" model="ir.model.access">
+            <field name="name">sale.order.line.preventista.access</field>
+            <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="group_id" ref="ds_accounts_users.group_custom_sales_restricted"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
 
-
-
-
-
-
-
-
+        <!-- Permisos de Acceso para Movimiento de Existencias -->
+        <record id="stock_move_preventista_access" model="ir.model.access">
+            <field name="name">stock.move.preventista.access</field>
+            <field name="model_id" ref="stock.model_stock_move"/>
+            <field name="group_id" ref="ds_accounts_users.group_custom_sales_restricted"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
 
     </data>
 </odoo>
+
 
