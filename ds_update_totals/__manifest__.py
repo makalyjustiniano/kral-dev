@@ -1,19 +1,20 @@
+
 # -*- coding: utf-8 -*-
 {
-    'name': "KRAL - Update Divisa",
+    'name': "KRAL - Update Totals",
     'summary': """
-        Uptate Divisa
+        Update Totals
     """,
     'description': """
-        - Updata Divisa
+        - Actualizar Totals
     """,
     'author': "Anthony Amutari Justiniano",
     'website': "https://www.kral.com",
     'category': 'Development',
     'version': '0.1',
-    'depends': ['purchase', 'stock'],
+    'depends': ['sale'],
     'data': [
-        'views/purchase_order_view.xml',
+        'views/updat2_order_view.xml',
 
     ],
     'demo': [
