@@ -27,11 +27,12 @@ class WhatsappWizard(models.TransientModel):
             product_name = move_line.product_id.name
             quantity_demanded = move_line.product_uom_qty  
             description_picking = move_line.description_picking
-
+            contador = 0
             for row in range(1, sheet.nrows):
                 product_code = str(sheet.cell(row, 0).value).strip()
-                quantity = sheet.cell(row, 1).value
-                price_unit = sheet.cell(row, 2).value
+                numero_serie =str(sheet.cell(row, 1).value).strip()
+                #quantity = sheet.cell(row, 1).value
+                #price_unit = sheet.cell(row, 2).value
 
 
                 if not product_code:
@@ -41,21 +42,11 @@ class WhatsappWizard(models.TransientModel):
                 if not product:
                     raise ValidationError(f"El producto con código '{product_code}' no existe en el sistema.")
 
-            
-                #raise ValidationError(f"product_id excel:'{product.id}' product_id line: '{product_id.id}' ")   
+             
                 if product.id == product_id.id:
-                    self.env['stock.move'].create({
-                        'description_picking': description_picking,
-                        'picking_id': self.picking_id.id,  
-                        'product_id': product.id,  
-                        'product_uom_qty': quantity_demanded,  
-                        'product_uom': product.uom_id.id,  
-                        'name': product.name,  
-                        'location_id': self.picking_id.location_id.id,  
-                        'location_dest_id': self.picking_id.location_dest_id.id,  
-                        'date': self.picking_id.date,
-                        'date_deadline': self.picking_id.date_deadline,
-                        'state': 'assigned',  
-                    })
+                    contador = contador + 1
+                
+            move_line.quantity_done = contador
 
-        #raise ValidationError(f"Lectura finalizada con éxito. Último producto leído: {product_code}")
+
+
