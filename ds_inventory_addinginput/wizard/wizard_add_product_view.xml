@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_stock_purchase_wizard_form" model="ir.ui.view">
+        <field name="name">stock.view.wizard.form</field>
+        <field name="model">stock.entry.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Gestión de Entrada de Productos">
+                <group>
+                    <field name="picking_id" readonly="1"/>
+                    <field name="additional_notes"/>
+                    <field name="product_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button string="Confirmar" type="object" name="confirm_wizard_action" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
