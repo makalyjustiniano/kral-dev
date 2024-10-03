@@ -26,7 +26,7 @@ class StockWizard(models.TransientModel):
 
         for row in range(1, sheet.nrows):
             product_code_pivot = str(sheet.cell(row, 0).value).strip()
-            serial_number_pivot = str(sheet.cell(row, 2).value).strip()
+            serial_number_pivot = str(sheet.cell(row, 1).value).strip()
 
             if not product_code_pivot:
                 raise ValidationError(f"El código de producto en la fila {row} está vacío o no es válido.")
@@ -49,11 +49,13 @@ class StockWizard(models.TransientModel):
             description_picking = move_line.description_picking
             excel_data_serie = []
             excel_data_nombre = []
+            excel_data_peso_brut = []
+            excel_data_peso_neto = []
             for row in range(1, sheet.nrows):
                 product_code = str(sheet.cell(row, 0).value).strip()
-                serial_number = str(sheet.cell(row, 2).value).strip()
-                #peso_bruto = sheet.cell(row, 1).value
-                #peso_neto = sheet.cell(row, 3).value
+                serial_number = str(sheet.cell(row, 1).value).strip()
+                peso_bruto = sheet.cell(row, 2).value
+                peso_neto = sheet.cell(row, 3).value
 
 
                 if not product_code:
@@ -64,23 +66,19 @@ class StockWizard(models.TransientModel):
                     raise ValidationError(f"El producto con código '{product_code}' no existe en el sistema.")
 
                 if product.id == product_id.id:
-                    if product_code in excel_data_nombre:
-
-                        excel_data_serie.append(serial_number)
-                        excel_data_nombre.append(product_name)
-                    else:
-                        excel_data_serie.append(serial_number)
-                        excel_data_nombre.append(product_name)
-
-                    
-                    for serial_number in excel_data_serie:
+                    excel_data_serie.append(serial_number)
+                    excel_data_nombre.append(product_name)
+                    excel_data_peso_brut.append(peso_bruto)
+                    excel_data_peso_neto.append(peso_neto)
+                   
+                    for index,serial_number in enumerate(excel_data_serie):
                         lot = self.env['stock.production.lot'].search([
                             ('name', '=', serial_number),
                             ('product_id', '=', product_id.id)
                         ], limit=1)
     
                         if not lot:
-    
+     
                             lot = self.env['stock.production.lot'].create({
                                 'name': serial_number,  
                                 'product_id': product_id.id,
@@ -94,6 +92,7 @@ class StockWizard(models.TransientModel):
                         'lot_id': lot.id,
                         'lot_name': lot.name,
                         'qty_done': 1,
+                        #'btc_peso_brut': excel_data_peso_brut[index],
                         'location_id': move_line.location_id.id,
                         'location_dest_id': move_line.location_dest_id.id,
                         'picking_id': self.picking_id.id,
@@ -101,6 +100,8 @@ class StockWizard(models.TransientModel):
                         })
                     excel_data_serie = []
                     excel_data_nombre = []
+                    excel_data_peso_brut = []
+                    excel_data_peso_neto = []
 
                      
 
