@@ -21,14 +21,32 @@ class StockWizard(models.TransientModel):
   
         workbook = xlrd.open_workbook(file_contents=data)
         sheet = workbook.sheet_by_index(0)  
-   
+        serial_numbers_set = set()
+        serial_numbers_set = set()
+
+        for row in range(1, sheet.nrows):
+            product_code_pivot = str(sheet.cell(row, 0).value).strip()
+            serial_number_pivot = str(sheet.cell(row, 2).value).strip()
+
+            if not product_code_pivot:
+                raise ValidationError(f"El código de producto en la fila {row} está vacío o no es válido.")
+
+            product = self.env['product.product'].search([('name', '=', product_code_pivot)], limit=1)
+            if not product:
+                raise ValidationError(f"El producto con código '{product_code_pivot}' no existe en el sistema.")
+
+            if product.tracking == 'serial':
+                if serial_number_pivot in serial_numbers_set:
+                    raise ValidationError(f"Se encontró un número de serie duplicado para el producto '{product.name}' en la fila {row + 1}: '{serial_number_pivot}'. Verifique el archivo Excel.")
+
+                serial_numbers_set.add(serial_number_pivot) 
+
         for move_line in self.picking_id.move_lines:
 
             product_id = move_line.product_id
             product_name = move_line.product_id.name
             quantity_demanded = move_line.product_uom_qty  
             description_picking = move_line.description_picking
-            contador = 0
             excel_data_serie = []
             excel_data_nombre = []
             for row in range(1, sheet.nrows):
@@ -50,18 +68,11 @@ class StockWizard(models.TransientModel):
 
                         excel_data_serie.append(serial_number)
                         excel_data_nombre.append(product_name)
-                        #raise ValidationError(serial_number)
                     else:
                         excel_data_serie.append(serial_number)
                         excel_data_nombre.append(product_name)
 
-                    #serial_numbers = excel_data[serial_number]
                     
-                    contador = contador + 1
-                contadorp = 0
-            #raise ValidationError(f' serie0: "{excel_data_serie[0]}", serie1:  "{excel_data_serie[1]}"')
-                if product.id == product_id.id:
-                        
                     for serial_number in excel_data_serie:
                         lot = self.env['stock.production.lot'].search([
                             ('name', '=', serial_number),
@@ -69,13 +80,13 @@ class StockWizard(models.TransientModel):
                         ], limit=1)
     
                         if not lot:
-                            contadorp += 1
     
                             lot = self.env['stock.production.lot'].create({
                                 'name': serial_number,  
                                 'product_id': product_id.id,
                                 'company_id': self.picking_id.company_id.id,
                             })
+                        
 
                         self.env['stock.move.line'].create({
                         'move_id': move_line.id,
@@ -92,11 +103,9 @@ class StockWizard(models.TransientModel):
                     excel_data_nombre = []
 
                      
-                #raise ValidationError(contadorp)
 
 
 
-            #move_line.quantity_done = contado
 
 
 
