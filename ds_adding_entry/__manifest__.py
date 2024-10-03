@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "KRAL - Ingreso De Entradas",
+    'name': "KRAL - Ingresos A Stock Carga Masiva",
     'summary': """
-        Ingreso masivo de entradas a invetario
+        Ingreso masivo de entradas de productos por excel
     """,
     'description': """
         - En formato excel cargar datos de ingreso al invetario.
