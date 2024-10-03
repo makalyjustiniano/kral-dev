@@ -12,7 +12,6 @@ class StockWizard(models.TransientModel):
     excel_file = fields.Binary('Cargar Archivo Excel')
     picking_id = fields.Many2one('stock.picking', string="Documento de Entrada")    
 
-  
     def cargar_data(self):
         if not self.excel_file:
             raise UserError("Cargue su archivo excel, por favor.")
@@ -27,7 +26,8 @@ class StockWizard(models.TransientModel):
         for row in range(1, sheet.nrows):
             product_code_pivot = str(sheet.cell(row, 0).value).strip()
             serial_number_pivot = str(sheet.cell(row, 1).value).strip()
-
+            if '.' in serial_number_pivot:
+                serial_number_pivot = serial_number_pivot.split('.')[0]
             if not product_code_pivot:
                 raise ValidationError(f"El código de producto en la fila {row} está vacío o no es válido.")
 
@@ -54,6 +54,8 @@ class StockWizard(models.TransientModel):
             for row in range(1, sheet.nrows):
                 product_code = str(sheet.cell(row, 0).value).strip()
                 serial_number = str(sheet.cell(row, 1).value).strip()
+                if '.' in serial_number:  
+                    serial_number = serial_number.split('.')[0]
                 peso_bruto = sheet.cell(row, 2).value
                 peso_neto = sheet.cell(row, 3).value
 
@@ -70,8 +72,9 @@ class StockWizard(models.TransientModel):
                     excel_data_nombre.append(product_name)
                     excel_data_peso_brut.append(peso_bruto)
                     excel_data_peso_neto.append(peso_neto)
-                   
+
                     for index,serial_number in enumerate(excel_data_serie):
+
                         lot = self.env['stock.production.lot'].search([
                             ('name', '=', serial_number),
                             ('product_id', '=', product_id.id)
