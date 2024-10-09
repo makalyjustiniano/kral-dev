@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <template id="chathome_website">
+            <t t-call="website.layout">
+                <t t-set="title">ZPL PRINTER</t>
+                <div class="container">
+                    <h1>Impresión Bluetooth</h1>
+                    <button id="connect">Conectar a la Impresora</button>
+                    <script>
+                        document.getElementById('connect').addEventListener('click', async () => {
+                            try {
+                                // Solicitar el dispositivo Bluetooth
+                                const device = await navigator.bluetooth.requestDevice({
+                                    filters: [{ services: ['00001101-0000-1000-8000-00805f9b34fb'] }] // UUID del SPP
+                                });
+                                
+                                // Conectar al dispositivo
+                                const server = await device.gatt.connect();
+                                
+                                // Comando ZPL a enviar
+                                const zplCommand = '^XA^FO50,50^ADN,36,20^FDHola desde Odoo!^FS^XZ';
+                                
+                                // Enviar el comando ZPL
+                                await sendZplCommand(server, zplCommand);
+                            } catch (error) {
+                                console.error('Error al conectar a la impresora:', error);
+                            }
+                        });
+
+                        async function sendZplCommand(server, command) {
+                            const service = await server.getPrimaryService('00001101-0000-1000-8000-00805f9b34fb'); // UUID del SPP
+                            const characteristic = await service.getCharacteristic('00001101-0000-1000-8000-00805f9b34fb'); // Aquí puedes usar el mismo UUID para escribir
+                            await characteristic.writeValue(new TextEncoder().encode(command));
+                        }
+                    </script>
+                </div>        
+            </t>
+        </template>
+    </data>
+</odoo>

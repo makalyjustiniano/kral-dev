@@ -1,0 +1,14 @@
+
+<odoo>
+  <record id="view_sale_order_form_inherit" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.bluetooth</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+      <button name="action_cancel" position="after">
+        <button name="action_print_bluetooth_label" type="object" string="Descargar ZPL" class="oe_highlight"/>
+        <button name="action_open_controller" type="object" string="Imprimir" class="oe_highlight"/>
+      </button>
+    </field>
+  </record>
+</odoo>
