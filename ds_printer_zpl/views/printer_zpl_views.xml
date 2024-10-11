@@ -17,17 +17,13 @@
 
                             });
                            const server = await device.gatt.connect();
-                                // Listar servicios disponibles
                                 const services = await server.getPrimaryService('38eb4a80-c570-11e3-9507-0002a5d5c51b');
                                 console.log("Servicios disponibles:", services);
-                                alert(services);                                      
-                                // Buscar el servicio necesario
                                  const characteristics = await services.getCharacteristics();
                             console.log("Características del servicio:", characteristics);
 
                              let writeCharacteristic = null;
 
-                                // Buscar la característica que permite escritura
                                 for (let characteristic of characteristics) {
                                     if (characteristic.properties.write) {
                                         writeCharacteristic = characteristic;
@@ -36,10 +32,8 @@
                                 }
 
                                 if (writeCharacteristic) {
-                                    // Comando ZPL a enviar
-                                    const zplCommand = '^XA^FO50,50^ADN,36,20^FDHola desde Odoo!^FS^XZ';
+                                    const zplCommand = 'IMPRESIÓN DE COTIZACIÓN ODOO V15 INDUSTRIAS KRAL!';
                                     
-                                    // Enviar el comando ZPL a la impresora
                                     await writeCharacteristic.writeValue(new TextEncoder().encode(zplCommand));
                                     alert('Comando ZPL enviado a la impresora.');
                                 } else {
@@ -51,12 +45,7 @@
                             }
                         });
 
-                           async function sendZplCommand(server, command) {
-                            const service = await server.getPrimaryService('38eb4a80-c570-11e3-9507-0002a5d5c51b');
-                            const characteristic = await service.getCharacteristic('00001101-0000-1000-8000-00805f9b34fb');
-                            await characteristic.writeValue(new TextEncoder().encode(command));
-                        }
-
+                          
                         </script>
                 </div>        
             </t>
