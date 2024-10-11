@@ -11,30 +11,53 @@
                     <script>
                         document.getElementById('connect').addEventListener('click', async () => {
                             try {
-                                // Solicitar el dispositivo Bluetooth
-                                const device = await navigator.bluetooth.requestDevice({
-                                    filters: [{ services: ['00001101-0000-1000-8000-00805f9b34fb'] }] // UUID del SPP
-                                });
-                                
-                                // Conectar al dispositivo
-                                const server = await device.gatt.connect();
-                                
-                                // Comando ZPL a enviar
-                                const zplCommand = '^XA^FO50,50^ADN,36,20^FDHola desde Odoo!^FS^XZ';
-                                
-                                // Enviar el comando ZPL
-                                await sendZplCommand(server, zplCommand);
-                            } catch (error) {
-                                console.error('Error al conectar a la impresora:', error);
+                            const device = await navigator.bluetooth.requestDevice({
+                              acceptAllDevices: true, 
+                              optionalServices: ['38eb4a80-c570-11e3-9507-0002a5d5c51b']
+
+                            });
+                           const server = await device.gatt.connect();
+                                // Listar servicios disponibles
+                                const services = await server.getPrimaryService('38eb4a80-c570-11e3-9507-0002a5d5c51b');
+                                console.log("Servicios disponibles:", services);
+                                alert(services);                                      
+                                // Buscar el servicio necesario
+                                 const characteristics = await services.getCharacteristics();
+                            console.log("Características del servicio:", characteristics);
+
+                             let writeCharacteristic = null;
+
+                                // Buscar la característica que permite escritura
+                                for (let characteristic of characteristics) {
+                                    if (characteristic.properties.write) {
+                                        writeCharacteristic = characteristic;
+                                        break;
+                                    }
+                                }
+
+                                if (writeCharacteristic) {
+                                    // Comando ZPL a enviar
+                                    const zplCommand = '^XA^FO50,50^ADN,36,20^FDHola desde Odoo!^FS^XZ';
+                                    
+                                    // Enviar el comando ZPL a la impresora
+                                    await writeCharacteristic.writeValue(new TextEncoder().encode(zplCommand));
+                                    alert('Comando ZPL enviado a la impresora.');
+                                } else {
+                                    alert('No se encontró ninguna característica con permisos de escritura.');
+                                }
+                          } catch (error) {
+                            alert(error);
+                            console.log(error);                 
                             }
                         });
 
-                        async function sendZplCommand(server, command) {
-                            const service = await server.getPrimaryService('00001101-0000-1000-8000-00805f9b34fb'); // UUID del SPP
-                            const characteristic = await service.getCharacteristic('00001101-0000-1000-8000-00805f9b34fb'); // Aquí puedes usar el mismo UUID para escribir
+                           async function sendZplCommand(server, command) {
+                            const service = await server.getPrimaryService('38eb4a80-c570-11e3-9507-0002a5d5c51b');
+                            const characteristic = await service.getCharacteristic('00001101-0000-1000-8000-00805f9b34fb');
                             await characteristic.writeValue(new TextEncoder().encode(command));
                         }
-                    </script>
+
+                        </script>
                 </div>        
             </t>
         </template>
