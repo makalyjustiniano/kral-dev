@@ -1,0 +1,8 @@
+<odoo>
+  <data>
+    <template id="assets_backend_snippets" inherit_id="web.assets_backend" name="website snippets" >
+        <xpath expr="." position="inside">
+        </xpath>
+    </template>
+  </data>
+</odoo>

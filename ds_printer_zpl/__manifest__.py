@@ -11,12 +11,21 @@
     'website': "https://www.kral.com",
     'category': 'Development',
     'version': '0.1',
-    'depends': ['sale'],
+    'depends': ['sale','web'],
     'data': [
-        'views/sale_printer_zpl_view.xml',
         'views/printer_zpl_views.xml',
+        'views/sale_printer_zpl_view.xml',
 
     ],
+    'assets': {
+        'web.assets_backend': [
+            'ds_printer_zpl/static/src/js/custom_actions.js',
+            'ds_printer_zpl/static/src/scss/custom_styles.scss',
+
+        ],
+    
+    },
+  
     'demo': [
 
     ],

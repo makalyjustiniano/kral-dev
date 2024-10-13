@@ -12,6 +12,10 @@ class StockPicking(models.Model):
             'target': 'new',
         }
 
+    def connect_printer(self):
+        a = 0 
+
+
     def action_print_bluetooth_label(self):
         zpl_command = f"""
         ^XA
