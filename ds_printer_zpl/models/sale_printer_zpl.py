@@ -13,7 +13,7 @@ class StockPicking(models.Model):
         }
 
     def connect_printer(self):
-        a = 0 
+        active_id = self.env.context.get('active_id') 
 
 
     def action_print_bluetooth_label(self):
