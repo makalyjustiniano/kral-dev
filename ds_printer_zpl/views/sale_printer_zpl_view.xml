@@ -6,10 +6,8 @@
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
       <xpath expr="//header" position="inside">
-          <button name="action_open_controller" type="object" icon="fa-files-o" string="Impresión Térmica" class="oe_highlight" />
           <button name="action_print_bluetooth_label" type="object" string="Descargar zpl" class="oe_highlight" icon="fa-download" />
-        <button id="connect_printer" name="connect_printer"   type="object" string=" Printer Options" class="btn_printer_options" icon="/ds_printer_zpl/static/src/img/icon_printer_zpl2.png"     t-att-data-sale-order-id="active_id"   />
-
+        <button id="connect_printer" name="connect_printer"   type="object" string=" Printer Options" class="btn_printer_options" icon="/ds_printer_zpl/static/src/img/icon_printer_zpl2.png"     t-att-data-sale-order-id="active_id"  />
         </xpath>
       </field>
   </record>
