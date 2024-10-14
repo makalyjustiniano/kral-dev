@@ -8,7 +8,7 @@ odoo.define('ds_printer_zpl.custom_actions', function(require) {
   console.log("ADD JS");
   let device = null;
   let writeCharacteristic = null;
-
+  
 async function getSaleOrderByName(saleOrderName) {
     try {
         const searchResponse = await ajax.jsonRpc('/web/dataset/call_kw', 'call', {
@@ -53,7 +53,8 @@ async function getSaleOrderByName(saleOrderName) {
       if (device == null){
       device = await navigator.bluetooth.requestDevice({
           acceptAllDevices: true, 
-          optionalServices: ['38eb4a80-c570-11e3-9507-0002a5d5c51b']
+          //optionalServices: ['38eb4a80-c570-11e3-9507-0002a5d5c51b']
+          services: ['38eb4a80-c570-11e3-9507-0002a5d5c51b']
       });
       
       
@@ -67,6 +68,10 @@ async function getSaleOrderByName(saleOrderName) {
           break;
         }
       }
+
+      localStorage.setItem('lastConnectedDeviceName', device.name);
+      localStorage.setItem('lastConnectedDeviceId', device.id);
+      localStorage.setItem('lastConnectedDeviceAll', device);
       }
       if (writeCharacteristic) {
         const saleOrderId = data[0].id;
@@ -78,7 +83,14 @@ async function getSaleOrderByName(saleOrderName) {
 
         const zplCommand = 'FACTURA ' + saleOrderId + ' TOTAL: ' + amount_total + ' Cliente: ' + partnerName ;                              
         const encodedZPL = new TextEncoder('ascii').encode(zplCommand);
-        await writeCharacteristic.writeValue(encodedZPL);      
+        await writeCharacteristic.writeValue(encodedZPL);
+
+        for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);  
+        const value = localStorage.getItem(key);  
+        console.log(`Clave: ${key}, Valor: ${value}`);
+        }
+        
       }
       else
       {
