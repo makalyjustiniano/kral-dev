@@ -16,13 +16,32 @@ async function getSaleOrderByName(saleOrderName) {
             method: 'search_read',
             args: [[['name', '=', saleOrderName]]],
             kwargs: {
-                fields: ['id','name', 'partner_id', 'date_order', 'amount_total'],
+                fields: ['id','name', 'partner_id', 'date_order', 'amount_total','order_line'],
                 limit: 1
             }
         });
         if (searchResponse && searchResponse.length > 0) {
+
         }
-        return searchResponse;
+
+       
+        //console.log("Order_line: " , searchResponse[0].order_line)
+        const searchResponseOrderlines = await ajax.jsonRpc('/web/dataset/call_kw', 'call', {
+            model: 'sale.order.line',
+            method: 'search_read',
+            args: [[['id', 'in', searchResponse[0].order_line]]],
+            kwargs: {
+                fields: ['product_id', 'product_uom_qty', 'price_unit', 'price_subtotal']
+            }
+            
+        });
+
+       for (var i = 0; i < searchResponseOrderlines.length; i++){
+        //console.log("Product_id: " , searchResponseOrderlines[i].product_id[1]);
+
+       }
+       var data_sale = [searchResponse, searchResponseOrderlines]
+       return data_sale;
     } catch (error) {
         console.error('Error al obtener datos de la venta:', error);
         return null;
@@ -41,6 +60,13 @@ async function getSaleOrderByName(saleOrderName) {
     console.log(nombreVentaElement.textContent.trim());
     getSaleOrderByName(nombreVentaElement.textContent.trim()).then(data => {
         if(data){
+        var data2 = data[0];
+        for(var i = 0; i <data2.length; i++){
+            console.log(data2[i].partner_id[1]);
+            console.log(data2[i].name);
+          }       
+        
+        console.log(data[1]);
          connectToBluetoothDevice(data);
 
         }
@@ -79,9 +105,10 @@ async function getSaleOrderByName(saleOrderName) {
         const amount_total = data[0].amount_total;
         console.log('Amount Total: ', amount_total);
         const partnerName = data[0].partner_id[1];
+        const orderLine = data[0].order_line;
         console.log('Nombre Cliente: ', partnerName);
 
-        const zplCommand = 'FACTURA ' + saleOrderId + ' TOTAL: ' + amount_total + ' Cliente: ' + partnerName ;                              
+        const zplCommand = 'FACTURA ' + saleOrderId + ' TOTAL: ' + amount_total + ' Cliente: ' + partnerName + 'Order Line: ' + orderLine ;                              
         const encodedZPL = new TextEncoder('ascii').encode(zplCommand);
         await writeCharacteristic.writeValue(encodedZPL);
 
