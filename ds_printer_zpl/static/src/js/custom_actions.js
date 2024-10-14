@@ -6,6 +6,8 @@ odoo.define('ds_printer_zpl.custom_actions', function(require) {
   const core = require('web.core');
   const QWeb = core.qweb;
   console.log("ADD JS");
+  let device = null;
+  let writeCharacteristic = null;
 
 async function getSaleOrderByName(saleOrderName) {
     try {
@@ -39,12 +41,6 @@ async function getSaleOrderByName(saleOrderName) {
     console.log(nombreVentaElement.textContent.trim());
     getSaleOrderByName(nombreVentaElement.textContent.trim()).then(data => {
         if(data){
-            const saleOrderId = data[0].id;
-            console.log('ID de la venta: ', saleOrderId);
-            const amount_total = data[0].amount_total;
-            console.log('Amount Total: ', amount_total);
-            const partnerName = data[0].partner_id[1];
-            console.log('Nombre Cliente: ', partnerName);
          connectToBluetoothDevice(data);
 
         }
@@ -54,7 +50,8 @@ async function getSaleOrderByName(saleOrderName) {
   async function connectToBluetoothDevice(data) {
     try {
 
-      const device = await navigator.bluetooth.requestDevice({
+      if (device == null){
+      device = await navigator.bluetooth.requestDevice({
           acceptAllDevices: true, 
           optionalServices: ['38eb4a80-c570-11e3-9507-0002a5d5c51b']
       });
@@ -64,12 +61,12 @@ async function getSaleOrderByName(saleOrderName) {
       const services = await server.getPrimaryService('38eb4a80-c570-11e3-9507-0002a5d5c51b');
       const characteristics = await services.getCharacteristics();
       
-      let writeCharacteristic = null;
       for (let characteristic of characteristics) {
         if (characteristic.properties.write) {
           writeCharacteristic = characteristic;
           break;
         }
+      }
       }
       if (writeCharacteristic) {
         const saleOrderId = data[0].id;
