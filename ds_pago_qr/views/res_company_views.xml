@@ -1,0 +1,29 @@
+
+<odoo>
+  <record id="view_res_company_qr_form_inherit" model="ir.ui.view">
+    <field name="name">res.company.form.inherit.qr</field>
+    <field name="model">res.company</field>
+    <field name="inherit_id" ref="base.view_company_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//notebook" position="inside">
+        <page string="Configuración QR" name="qr_config">
+          <group>
+            <group>
+              <field name="method_qr" type="object" string="Método QR" />
+              <field name="text_qr" type="object" string="Texto QR"  widget="section_and_note_text" style="width: 300px !important;word-wrap: break-word !important;" attrs="{'invisible': [('method_qr', '=', False)]}" />
+              <field name="image_qr_saved"  string="Imagen QR Guardada" widget="image" class="oe_avatar"  attrs="{'invisible': [('method_qr', '=', False)]}"/>
+              <field name="image_qr"  string="Imagen QR Generada"  widget="image" class="oe_avatar" attrs="{'invisible': [('method_qr', '=', False)]}"/>
+            </group>
+            <group attrs="{'invisible': [('method_qr', '=', False)]}">
+              <button name="generate_qr_image" type="object" string="Generar Imagen QR" class="btn_qr" style="border: 1px solid black !important; border-radius: 5px !important;" />
+              <br />  
+              <br /> 
+              <br /> 
+              <button name="resquest_qr_text" type="object" string="Resquest QR" class="btn_qr"  style="border: 1px solid black !important; border-radius: 5px !important;" />
+            </group> 
+          </group>
+        </page>
+      </xpath>
+      </field>
+  </record>
+</odoo>

@@ -1,0 +1,28 @@
+
+<odoo>
+  <record id="view_sale_order_qr_form_inherit" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.qr</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+       <xpath expr="//header" position="inside">
+          <style>
+              .btn_qr{
+                  background: white;
+                  color: black;
+              }
+          </style>
+
+          <button name="action_open_wizard_qr" type="object" string="Pago por QR" class="oe_highlight btn_qr" icon="fa-university" />
+        </xpath>
+      <xpath expr="//notebook/page[@name='other_information']/group" position="inside">
+        <group string="QR" name="image_qr">
+              <group name="config_qr" colspan="2" class="mt-0">
+                <field name="method_qr" readonly="1"/>
+                <field name="image_qr" widget="image" readonly="1" attrs="{'invisible': [('method_qr', '=', False)]}"/>
+              </group>
+        </group>
+        </xpath>
+      </field>
+  </record>
+</odoo>

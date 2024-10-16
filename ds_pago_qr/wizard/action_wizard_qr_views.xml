@@ -1,0 +1,34 @@
+<?versión xml="1.0" codificación="UTF-8"?>
+<odoo>
+    <data>
+        <record id="custom_qr_wizard_form_view" model="ir.ui.view">
+            <field name="name">custom.qr.wizard.form</field>
+            <field name="model">custom.qr.wizard</field>
+            <field name="arch" type="xml">
+              <form string="Cargar Data">
+                    <group>
+                        <group>
+                          <field name="image_qr" string="QR IMAGE" widget="image" readonly="1" />
+                        </group>
+                     </group>
+                    <group>
+                        <group>
+                        </group>
+                     </group>
+                    <footer>
+                        <style>
+                            .boton_test{
+                                background: white;
+                                color: black;
+                                border: 2px solid black;
+                                border-radius: 25px;
+                            }
+                        </style>
+                        <button name="confirm_payment" type="object" string="Aceptar" class="oe_highlight boton_test" />
+                        <button special="cancel" string="Cancelar" class="oe_highlight boton_test" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
