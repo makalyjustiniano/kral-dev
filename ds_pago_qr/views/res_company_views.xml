@@ -6,11 +6,17 @@
     <field name="inherit_id" ref="base.view_company_form"/>
     <field name="arch" type="xml">
       <xpath expr="//notebook" position="inside">
-        <page string="Configuración QR" name="qr_config">
+        <page string="Configuración QR" name="qr_config"  >
           <group>
             <group>
-              <field name="method_qr" type="object" string="Método QR" />
-              <field name="text_qr" type="object" string="Texto QR"  widget="section_and_note_text" style="width: 300px !important;word-wrap: break-word !important;" attrs="{'invisible': [('method_qr', '=', False)]}" />
+              <field name="method_qr" string="Método QR"    />
+              <field name="username"  string="Username"  attrs="{'invisible': [('method_qr', '=', False)]}" />
+              <field name="password"  string="Password"   attrs="{'invisible': [('method_qr', '=', False)]}" password="True" />
+              <field name="url"  string="URL"   attrs="{'invisible': [('method_qr', '=', False)]}" />
+              <field name="apikey_config"  string="APIKEY" attrs="{'invisible': [('method_qr', '=', False)]}" password="True" />
+            </group>
+            <group>
+              <field name="text_qr"  string="Texto QR"  widget="section_and_note_text" style="width: 300px !important;word-wrap: break-word !important;" attrs="{'invisible': [('method_qr', '=', False)]}" />
               <field name="image_qr_saved"  string="Imagen QR Guardada" widget="image" class="oe_avatar"  attrs="{'invisible': [('method_qr', '=', False)]}"/>
               <field name="image_qr"  string="Imagen QR Generada"  widget="image" class="oe_avatar" attrs="{'invisible': [('method_qr', '=', False)]}"/>
             </group>

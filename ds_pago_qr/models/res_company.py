@@ -7,7 +7,12 @@ class PaymentQR(models.Model):
     _inherit = 'res.company'
 
 
-    method_qr = fields.Boolean(string="Aceptar Pago QR", default=False)
+    username = fields.Char(  string="Username", readonly=True)
+    password = fields.Char( string="password", readonly=True)
+    apikey_config = fields.Text( string="ApiKey", readonly=True)
+    url = fields.Char( string="URL", readonly=True)
+
+    method_qr = fields.Boolean( string="Aceptar Pago QR")
     image_qr = fields.Image(string="Cargar Imagen qr", max_width=1024, max_height=1024)
     image_qr_saved = fields.Image(string="Imagen cargada",max_width=1024, max_height=1024)
     text_qr = fields.Char(string="Texto qr")

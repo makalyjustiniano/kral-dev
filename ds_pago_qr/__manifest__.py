@@ -15,6 +15,7 @@
     'data': [  
         'security/wizard_security.xml',
         'security/ir.model.access.csv',
+        'views/res_config_qr_view.xml',
         'views/action_payment_qr_views.xml',
         'views/res_company_views.xml',
         'wizard/action_wizard_qr_views.xml',
