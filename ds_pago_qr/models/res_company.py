@@ -4,6 +4,7 @@ import base64
 from io import BytesIO
 from PIL import Image
 import qrcode
+import requests
 class PaymentQR(models.Model):
     _inherit = 'res.company'
 
@@ -22,31 +23,34 @@ class PaymentQR(models.Model):
     
 
     def generate_qr_image(self):
-        # Asegúrate de que haya texto para generar el QR
         if not self.text_qr:
             raise ValidationError("El campo 'Texto QR' no puede estar vacío.")
 
-        # Generar la imagen QR
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
         qr.add_data(self.text_qr)
         qr.make(fit=True)
-        
-        # Crear la imagen QR
         img = qr.make_image(fill_color="black", back_color="white")
-        
-        # Guardar la imagen en un objeto BytesIO
         buffered = BytesIO()
         img.save(buffered, format="PNG")
         img_byte_arr = buffered.getvalue()
-        
-        # Codificar la imagen a base64
         image_base64 = base64.b64encode(img_byte_arr).decode('utf-8')
 
-        # Guardar la imagen generada en el campo de imagen
         self.image_qr_saved = image_base64
 
 
     def resquest_qr_text(self):
-        pass
 
+        url = 'http://localhost:8069/api/get_token'
+
+        payload = {}
+
+        try:
+            response = requests.post(url, json=payload, headers={'Content-Type': 'application/json'})
+            if response.status_code == 200:
+                result = response.json()
+                raise ValidationError(f"Datos enviados: {result}")
+            else:
+                raise ValidationError("No exitoso")
+        except Exception as e:
+            raise ValidationError(f"Error: {e}")
 
