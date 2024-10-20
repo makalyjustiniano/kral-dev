@@ -71,41 +71,76 @@ async function getSaleData(saleOrderName) {
 
     getSaleData(nombreVentaElement.textContent.trim()).then(data => {
         if(data){
+          var client_id;
+          var client_name;
+          var sale_name;
+          var amount_total;
+          var amount_totals_json_tax;
+
+          var client_vat;
+          var client_address;
+          var client_street;
+          var client_name2;
+
+          var company_vat;
+          var company_street;
+          var company_name;
+          var company_city;
+
+          //console.log(dataSale);
           var dataSale = data[0];
-          console.log(dataSale);
           for (var i = 0; i < dataSale.length; i++) {
-            console.log("Cliente Id : ", dataSale[i].partner_id[0]);
-            console.log("Cliente Nombre: " , dataSale[i].partner_id[1]);
-            console.log("Name Sale: ",dataSale[i].name);
-            console.log("Total Venta: ",dataSale[i].amount_total);
-            console.log("Total JSON: ",dataSale[i].tax_totals_json);
+            client_id =  dataSale[i].partner_id[0];
+            client_name =  dataSale[i].partner_id[1];
+            sale_name = dataSale[i].name;
+            amount_total = dataSale[i].amount_total;
+            amount_totals_json_tax = dataSale[i].tax_totals_json;
           }
 
           var dataOrderLines = data[1];
           console.log(dataOrderLines);
+          var orderDetails = "";
           for (var i = 0; i < dataOrderLines.length; i++) {
-            console.log("Producto ", i , " : ", dataOrderLines[i].product_id[1]);
-            console.log("Producto ", i , " Precio unitario : ", dataOrderLines[i].price_unit);
-            console.log("Producto ", i , " Cantidad : ", dataOrderLines[i].product_uom_qty);
-            console.log("Producto ", i , " Subtotal : ", dataOrderLines[i].price_subtotal);
+           // console.log("Producto ", i , " : ", dataOrderLines[i].product_id[1]);
+           // console.log("Producto ", i , " Precio unitario : ", dataOrderLines[i].price_unit);
+           // console.log("Producto ", i , " Cantidad : ", dataOrderLines[i].product_uom_qty);
+           // console.log("Producto ", i , " Subtotal : ", dataOrderLines[i].price_subtotal);
+            orderDetails += "Producto " + (i + 1) + ": " + dataOrderLines[i].product_id[1] + "\n";
+            orderDetails += "Precio unitario: " + dataOrderLines[i].price_unit + "\n";
+            orderDetails += "Cantidad: " + dataOrderLines[i].product_uom_qty + "\n";
+            orderDetails += "Subtotal: " + dataOrderLines[i].price_subtotal + "\n";
+            orderDetails += "--------------------\n"; // Línea separadora
           }
           var dataPartner = data[2];
-          console.log(dataPartner);
+          //console.log(dataPartner);
           for (var i = 0; i < dataPartner.length; i++){
-            console.log("Cliente NIT: ", dataPartner[i].vat);
-            console.log("Cliente Dirección: ", dataPartner[i].street);
-            console.log("Cliente Nombre: ", dataPartner[i].name);
+            client_vat =  dataPartner[i].vat;
+            client_street =  dataPartner[i].street;
+            client_name2 =  dataPartner[i].name;
           }
           var dataCompany = data[3];
-          console.log(dataCompany);
+          //console.log(dataCompany);
           for (var i = 0; i < dataCompany.length; i++){
-            console.log("Compañía NIT: ", dataCompany[i].vat);
-            console.log("Compañía Dirección: ", dataCompany[i].street);
-            console.log("Compañía Nombre: ", dataCompany[i].name);
-            console.log("Compañía City: ", dataCompany[i].city);
+            company_vat =  dataCompany[i].vat;
+            company_street = dataCompany[i].street;
+            company_name =  dataCompany[i].name;
+            company_city = dataCompany[i].city;
           }
 
-          connectToBluetoothDevice(data);
+          connectToBluetoothDevice(
+            client_id,
+            client_name,
+            sale_name,
+            amount_total,
+            amount_totals_json_tax,
+            client_vat,
+            client_address,
+            company_vat,
+            company_street,
+            company_name,
+            company_city,
+            orderDetails
+          );
         }
         else {
           alert("Data no encontrada");
@@ -113,7 +148,21 @@ async function getSaleData(saleOrderName) {
     });
     }
   });
-  async function connectToBluetoothDevice(data) {
+  async function connectToBluetoothDevice(
+            client_id,
+            client_name,
+            sale_name,
+            amount_total,
+            amount_totals_json_tax,
+            client_vat,
+            client_address,
+            company_vat,
+            company_street,
+            company_name,
+            company_city,
+            orderDetails
+  )
+ {
     try {
 
       if (device == null){
@@ -141,7 +190,21 @@ async function getSaleData(saleOrderName) {
       }
       if (writeCharacteristic) {
 
-        writeZPL(data, writeCharacteristic);
+        writeZPL( 
+            client_id,
+            client_name,
+            sale_name,
+            amount_total,
+            amount_totals_json_tax,
+            client_vat,
+            client_address,
+            company_vat,
+            company_street,
+            company_name,
+            company_city,
+            orderDetails,
+            writeCharacteristic
+        );
        
         //for (let i = 0; i < localStorage.length; i++) {
         //const key = localStorage.key(i);  
@@ -158,13 +221,27 @@ async function getSaleData(saleOrderName) {
       console.error('Error al conectar al dispositivo Bluetooth:', error);
     }
   }
-  async function writeZPL(data, writeCharacteristic) {
+  async function writeZPL(
+            client_id,
+            client_name,
+            sale_name,
+            amount_total,
+            amount_totals_json_tax,
+            client_vat,
+            client_address,
+            company_vat,
+            company_street,
+            company_name,
+            company_city,
+            orderDetails,
+            writeCharacteristic
+  )
+{ 
     try{
-    const saleOrderId = data[0].id;
-        
-        const zplCommand = 'FACTURA ' + saleOrderId + ' TOTAL: ' + amount_total + ' Cliente: ' + partnerName + 'Order Line: ' + orderLine ;                              
-        const encodedZPL = new TextEncoder('ascii').encode(zplCommand);
-        await writeCharacteristic.writeValue(encodedZPL);
+          const zplCommand = ' Client Id:  ' + client_id  + ' Client Name: ' + client_name + ' Sale Name: ' + sale_name + ' Amount total: ' + amount_total + ' Detalles Línea Productos: ' + orderDetails;                              
+          const encodedZPL = new TextEncoder('ascii').encode(zplCommand);
+          await writeCharacteristic.writeValue(encodedZPL);
+
     } catch (error){
       console.error('Error al mandar datos a la impresora');
       alert('No se realizó el envío de los datos a la impresora');
