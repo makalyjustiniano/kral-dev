@@ -12,8 +12,8 @@
               <field name="method_qr" string="Método QR"    />
               <field name="username"  string="Username"  attrs="{'invisible': [('method_qr', '=', False)]}" />
               <field name="password"  string="Password"   attrs="{'invisible': [('method_qr', '=', False)]}" password="True" />
-              <field name="url"  string="URL"   attrs="{'invisible': [('method_qr', '=', False)]}" />
               <field name="apikey_config"  string="APIKEY" attrs="{'invisible': [('method_qr', '=', False)]}" password="True" />
+              <field name="text_conection"  string="URL Conection"  attrs="{'invisible': [('method_qr', '=', False)]}" />
             </group>
             <group>
               <field name="text_qr"  string="Texto QR"  widget="section_and_note_text" style="width: 300px !important;word-wrap: break-word !important;" attrs="{'invisible': [('method_qr', '=', False)]}" />

@@ -58,6 +58,7 @@
 	               <div class="text-muted">
                        URL Conection
                     </div>
+							 <field name="url_conection" string="URL"/>
 							   </div>
 								 
             </div>

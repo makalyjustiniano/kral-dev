@@ -15,7 +15,8 @@ class ResConfigQR(models.TransientModel):
                             'username': record.username,
                             'password': record.password,
                             'apikey_config': record.apikey_config, 
-                    
+                            'text_conection': record.url_conection
+                            
                         }
                         
                         data.write(valores)
@@ -25,4 +26,4 @@ class ResConfigQR(models.TransientModel):
     username = fields.Char(string="Username")
     password = fields.Char(string="password")
     apikey_config = fields.Text(string="ApiKey")
-
+    url_conection = fields.Char( string="URL")
