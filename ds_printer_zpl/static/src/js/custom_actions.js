@@ -5,7 +5,7 @@ odoo.define('ds_printer_zpl.custom_actions', function(require) {
   const AbstractAction = require('web.AbstractAction');
   const core = require('web.core');
   const QWeb = core.qweb;
-  console.log("ADD JS");
+  console.log("CUSTOM JS MK");
   let device = null;
   let writeCharacteristic = null;
   
@@ -37,7 +37,7 @@ async function getSaleData(saleOrderName) {
             method: 'search_read',
             args: [[['id', '=', id_partner]]],
             kwargs: {
-               fields: ['street', 'vat', 'name', 'id']
+               fields: ['street', 'vat', 'name', 'id', 'phone']
         }
       });
 
@@ -81,13 +81,14 @@ async function getSaleData(saleOrderName) {
           var client_address;
           var client_street;
           var client_name2;
+          var client_phone;
 
           var company_vat;
           var company_street;
           var company_name;
           var company_city;
+          var company_phone;
 
-          //console.log(dataSale);
           var dataSale = data[0];
           for (var i = 0; i < dataSale.length; i++) {
             client_id =  dataSale[i].partner_id[0];
@@ -98,13 +99,8 @@ async function getSaleData(saleOrderName) {
           }
 
           var dataOrderLines = data[1];
-          console.log(dataOrderLines);
           var orderDetails = "";
           for (var i = 0; i < dataOrderLines.length; i++) {
-           // console.log("Producto ", i , " : ", dataOrderLines[i].product_id[1]);
-           // console.log("Producto ", i , " Precio unitario : ", dataOrderLines[i].price_unit);
-           // console.log("Producto ", i , " Cantidad : ", dataOrderLines[i].product_uom_qty);
-           // console.log("Producto ", i , " Subtotal : ", dataOrderLines[i].price_subtotal);
             orderDetails += "Producto " + (i + 1) + ": " + dataOrderLines[i].product_id[1] + "\n";
             orderDetails += "Precio unitario: " + dataOrderLines[i].price_unit + "\n";
             orderDetails += "Cantidad: " + dataOrderLines[i].product_uom_qty + "\n";
@@ -117,6 +113,7 @@ async function getSaleData(saleOrderName) {
             client_vat =  dataPartner[i].vat;
             client_street =  dataPartner[i].street;
             client_name2 =  dataPartner[i].name;
+            client_phone = dataPartner[i].phone;
           }
           var dataCompany = data[3];
           //console.log(dataCompany);
@@ -125,6 +122,7 @@ async function getSaleData(saleOrderName) {
             company_street = dataCompany[i].street;
             company_name =  dataCompany[i].name;
             company_city = dataCompany[i].city;
+            company_phone = dataCompany[i].phone;
           }
 
           connectToBluetoothDevice(
@@ -139,6 +137,8 @@ async function getSaleData(saleOrderName) {
             company_street,
             company_name,
             company_city,
+            company_phone,
+            client_phone,
             orderDetails
           );
         }
@@ -160,6 +160,8 @@ async function getSaleData(saleOrderName) {
             company_street,
             company_name,
             company_city,
+            company_phone,
+            client_phone,
             orderDetails
   )
  {
@@ -202,6 +204,9 @@ async function getSaleData(saleOrderName) {
             company_street,
             company_name,
             company_city,
+            company_phone,
+            client_phone,
+
             orderDetails,
             writeCharacteristic
         );
@@ -233,6 +238,8 @@ async function getSaleData(saleOrderName) {
             company_street,
             company_name,
             company_city,
+            company_phone,
+            client_phone,
             orderDetails,
             writeCharacteristic
   )
@@ -248,9 +255,34 @@ async function getSaleData(saleOrderName) {
            ^FO100,80^A0N,25,25^FB400,5,0,C,0^FD${company_name}^FS
            ^FO100,110^A0N,25,25^FB400,5,0,C,0^FD${company_street}^FS
           ^XZ
+        `; 
+          const zplCommand2 = `
+          ^XA
+           ^FO100,10^A0N,25,25^FB400,5,0,C,0^FD${company_city}^FS
+           ^FO100,40^A0N,25,25^FB400,5,0,C,0^FDTel: ${company_phone}^FS
+           ^FO100,70^A0N,25,25^FB400,5,0,C,0^FD----------------^FS
+           ^FO100,72^A0N,25,25^FB400,5,0,C,0^FD----------------^FS
+          ^XZ
+        `;const zplCommand3 = `
+          ^XA
+           ^FO100,0^A0N,25,25^FB400,5,0,C,0^FDNIT^FS
+           ^FO100,2^A0N,25,25^FB400,5,0,C,0^FDNIT^FS
+           ^FO100,30^A0N,25,25^FB400,5,0,C,0^FD${company_vat}^FS
+           ^FO100,60^A0N,25,25^FB400,5,0,C,0^FDFACTURA N^FS
+           ^FO100,62^A0N,25,25^FB400,5,0,C,0^FDFACTURA N^FS
+           ^FO100,90^A0N,25,25^FB400,5,0,C,0^FD${sale_name}^FS
+           ^FO100,100^A0N,25,25^FB400,5,0,C,0^FD ^FS
+
+          ^XZ
         `;
+
           const encodedZPL = new TextEncoder('utf-8').encode(zplCommand);
+          const encodedZPL2 = new TextEncoder('utf-8').encode(zplCommand2);
+          const encodedZPL3 = new TextEncoder('utf-8').encode(zplCommand3);
+
           await writeCharacteristic.writeValue(encodedZPL);
+          await writeCharacteristic.writeValue(encodedZPL2);
+          await writeCharacteristic.writeValue(encodedZPL3);
 
     } catch (error){
       console.error('Error al mandar datos a la impresora');
