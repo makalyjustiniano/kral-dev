@@ -221,7 +221,7 @@ async function getSaleData(saleOrderName) {
       console.error('Error al conectar al dispositivo Bluetooth:', error);
     }
   }
-  async function writeZPL(
+ async function writeZPL(
             client_id,
             client_name,
             sale_name,
@@ -238,8 +238,18 @@ async function getSaleData(saleOrderName) {
   )
 { 
     try{
-          const zplCommand = ' Client Id:  ' + client_id  + ' Client Name: ' + client_name + ' Sale Name: ' + sale_name + ' Amount total: ' + amount_total + ' Detalles Línea Productos: ' + orderDetails;                              
-          const encodedZPL = new TextEncoder('ascii').encode(zplCommand);
+        
+        const zplCommand = `
+          ^XA
+           ^FO100,20^A0N,25,25^FB400,5,0,C,0^FDFACTURA^FS
+           ^FO100,22^A0N,25,25^FB400,5,0,C,0^FDFACTURA^FS
+           ^FO100,52^A0N,25,25^FB400,5,0,C,0^FDCON DERECHO A CREDITO FISCAL^FS
+           ^FO100,50^A0N,25,25^FB400,5,0,C,0^FDCON DERECHO A CREDITO FISCAL^FS
+           ^FO100,80^A0N,25,25^FB400,5,0,C,0^FD${company_name}^FS
+           ^FO100,110^A0N,25,25^FB400,5,0,C,0^FD${company_street}^FS
+          ^XZ
+        `;
+          const encodedZPL = new TextEncoder('utf-8').encode(zplCommand);
           await writeCharacteristic.writeValue(encodedZPL);
 
     } catch (error){
