@@ -40,7 +40,7 @@ class PaymentQR(models.Model):
 
     def resquest_qr_text(self):
 
-        url = 'http://localhost:8069/api/get_token'
+        url = 'https://9be1-190-104-16-140.ngrok-free.app/api/get_token'
 
         payload = {}
 
@@ -48,7 +48,7 @@ class PaymentQR(models.Model):
             response = requests.post(url, json=payload, headers={'Content-Type': 'application/json'})
             if response.status_code == 200:
                 result = response.json()
-                raise ValidationError(f"Datos enviados: {result}")
+                raise ValidationError(f"Datos enviados estado: {response.status_code} Response: {result}")
             else:
                 raise ValidationError("No exitoso")
         except Exception as e:

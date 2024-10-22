@@ -31,12 +31,12 @@ class QRConection(http.Controller):
     def get_token(self, **kwargs):
 
         company_id = 1
-        data_company = request.env['res.company'].browse(company_id)
-        url = "https://sip.mc4.com.bo:8443/autenticacion/v1/generarToken"
+        #data_company = request.env['res.company'].browse(company_id)
+        url = "https://dev-sip.mc4.com.bo:8443/autenticacion/v1/generarToken"
         
-        api_key = kwargs.get('apikey', 'none')
-        username = kwargs.get('username', 'none')
-        password = kwargs.get('password', 'none')
+        api_key = kwargs.get('apikey', 'bcb2a3db7b6a0ad75c1238fbc996dcbf97af8b1f6c9fd375')
+        username = kwargs.get('username', 'EMISORAMUTARIDESAROLLO')
+        password = kwargs.get('password', 'Admin12345.+.')
         
         headers = {
             'apikey': api_key,
@@ -46,19 +46,16 @@ class QRConection(http.Controller):
         body = {
             "username": username,
             "password": password
-        }
-        
-        if not data_company.exists():
-            return {'status': 'error', 'message': 'Compañía no encontrada'}
-
-        return {'status': 'success', 'message': data_company.name}  
-        #try:
-        #    response = requests.post(url, headers=headers, json=body)
-        #    response.raise_for_status()
-        #    return response.json()  # Retorna el token en JSON
-        #except requests.exceptions.RequestException as e:
-        #    return {'error': str(e)}
+        } 
+        try:
+            response = requests.post(url, headers=headers, json=body)
+            #response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            return {'Error de conexión: ': str(e)}
   
+
+
     @http.route('/qr_pago/', auth='public', website=True, csrf=False)
     def index(self, **kw):
         data2 = http.request.env['res.company'].search_read([], limit=1)
